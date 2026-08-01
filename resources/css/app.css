@@ -1,0 +1,39 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --color-primary: #c5010f;
+    --color-background: #ffffff;
+    --color-text-dark: #333333;
+    --color-text-light: #666666;
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Roboto', sans-serif;
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Global input font visibility fix */
+input, select, textarea, .form-input {
+    color: #1a1a1a !important;
+    -webkit-text-fill-color: #1a1a1a !important;
+    opacity: 1 !important;
+}
+
+input:read-only, input:disabled, .form-input:read-only, .form-input:disabled {
+    color: #1a1a1a !important;
+    -webkit-text-fill-color: #1a1a1a !important;
+    background-color: #f8fafc !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-text-fill-color: #1a1a1a !important;
+    -webkit-box-shadow: 0 0 0px 1000px #f0f9ff inset !important;
+}
+
