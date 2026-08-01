@@ -137,13 +137,18 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Build static report site
+      - name: Build CampusConnect preview site
         run: |
           mkdir -p public
-          cp "Vulnerability Test Results/executive-summary.md" public/index.md
+          mkdir -p public/assets
+          cp pages-site/index.html public/index.html
+          cp "sample images/818-Uni-Event-University-Event.png" public/assets/818-Uni-Event-University-Event.png
+          cp "sample images/Register-818-Uni-Event.png" public/assets/Register-818-Uni-Event.png
+          cp "sample images/Coordinator.jpeg" public/assets/Coordinator.jpeg
+          cp "sample images/admin.jpeg" public/assets/admin.jpeg
+          cp "Vulnerability Test Results/executive-summary.md" public/executive-summary.md
           cp "Vulnerability Test Results/security-review.md" public/security-review.md
           cp "Vulnerability Test Results/dependency-report.md" public/dependency-report.md
-          printf '<!doctype html><html><head><meta charset="utf-8"><title>CampusConnect Test Report</title></head><body><h1>CampusConnect Test Report</h1><ul><li><a href="index.md">Executive Summary</a></li><li><a href="security-review.md">Security Review</a></li><li><a href="dependency-report.md">Dependency Report</a></li></ul></body></html>' > public/index.html
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
