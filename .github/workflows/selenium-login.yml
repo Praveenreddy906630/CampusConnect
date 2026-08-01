@@ -1,4 +1,4 @@
-name: Clean tracked dependencies
+name: E2E Security Testing Workflow
 
 on:
   push:
