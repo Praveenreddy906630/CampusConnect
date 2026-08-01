@@ -1,0 +1,11 @@
+{
+  "name": "campusconnect-appium-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:app": "node tests/app-e2e-tests.js"
+  },
+  "devDependencies": {
+    "webdriverio": "^8.40.0"
+  }
+}

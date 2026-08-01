@@ -1,0 +1,11 @@
+{
+  "name": "campusconnect-selenium-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:login": "node tests/login-tests.js"
+  },
+  "devDependencies": {
+    "selenium-webdriver": "^4.23.0"
+  }
+}
