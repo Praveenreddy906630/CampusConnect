@@ -1,0 +1,57 @@
+name: Deploy Reports to GitHub Pages
+
+on:
+  workflow_run:
+    workflows: ["Appium Mobile E2E Tests"]
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy-reports:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Download Test Reports Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Automation_Test_Reports
+          path: Test Results/
+        continue-on-error: true
+
+      - name: Prepare GitHub Pages Report Structure
+        run: |
+          mkdir -p gh-pages-reports/reports/latest
+          BUILD_NUM=${{ github.run_number }}
+          mkdir -p gh-pages-reports/reports/history/build-00${BUILD_NUM}
+          
+          if [ -d "Test Results/HTML" ]; then
+            cp -r "Test Results/HTML/"* gh-pages-reports/reports/latest/ || true
+            cp -r "Test Results/HTML/"* gh-pages-reports/reports/history/build-00${BUILD_NUM}/ || true
+          fi
+          
+          if [ -d "Test Results/Summary" ]; then
+            cp -r "Test Results/Summary/"* gh-pages-reports/reports/latest/ || true
+          fi
+          
+          if [ -d "Test Results/Screenshots" ]; then
+            cp -r "Test Results/Screenshots" gh-pages-reports/reports/latest/screenshots || true
+          fi
+          
+          if [ -d "Test Results/Logs" ]; then
+            cp -r "Test Results/Logs" gh-pages-reports/reports/latest/logs || true
+          fi
+
+      - name: Deploy Reports to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages-reports
+          keep_files: true
