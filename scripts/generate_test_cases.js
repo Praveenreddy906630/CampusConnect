@@ -22,9 +22,9 @@ async function generateTestCases() {
     const modules = ['UI/UX Test', 'Functional Testing', 'Unit Testing', 'Validation Test', 'Deployable Status', 'API & Integration'];
     let count = 1;
 
-    // Generate 114 unique test cases dynamically (6 modules * 19 tests = 114)
+    // Generate 360 unique test cases dynamically (6 modules * 60 tests = 360)
     modules.forEach(mod => {
-        for (let i = 1; i <= 19; i++) {
+        for (let i = 1; i <= 60; i++) {
             sheet.addRow({
                 id: `TC-${count.toString().padStart(3, '0')}`,
                 module: mod,
