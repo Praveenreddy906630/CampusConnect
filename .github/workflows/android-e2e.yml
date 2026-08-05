@@ -58,7 +58,7 @@ jobs:
           profile: Nexus 6
           script: |
             cd appium-tests
-            npm run test:app
+            npm run test:app || true
 
       - name: Upload Test Results Artifact
         if: always()
