@@ -120,18 +120,20 @@ function generateHTML(results, total, passed, failed, passRate) {
 }
 
 function generateMarkdown(results, total, passed, failed, passRate) {
-  const failedTests = results.filter(r => r.status === 'FAIL').map(r => `- **${r.name}**: ${r.error}`).join('\n');
+  const failedTests = results.filter(r => r.status === 'FAIL').map(r => `- ${r.name}\n  - Failure Reason: ${r.error}`).join('\n');
   const md = `# Live GitHub Pages E2E Test Summary
 
-**Deployment URL:** ${BASE_URL}
+Deployment URL:
+${BASE_URL}
 
-**Total Tests:** ${total}  
-**Passed:** ${passed}  
-**Failed:** ${failed}  
-**Skipped:** 0  
-**Pass Percentage:** ${passRate}%  
+Total Tests: ${total}
+Passed: ${passed}
+Failed: ${failed}
+Skipped: 0
+Pass Percentage: ${passRate}%
 
-${failed > 0 ? `**Failed Tests:**\n${failedTests}` : '**All tests passed successfully!**'}
+Failed Tests:
+${failed > 0 ? failedTests : '- None'}
 `;
   fs.writeFileSync(path.join(SUMMARY_DIR, "summary.md"), md);
 }
