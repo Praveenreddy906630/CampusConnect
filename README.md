@@ -1,12 +1,16 @@
-
 # 🎓 College Event Management System
 
 <div align="center">
 
 **A comprehensive web-based Event Management System designed for colleges to streamline event registration, coordination, analytics, and Student of the Year (SOTY) applications.**
 
-
 </div>
+
+----------
+
+## 📱 Download Android App
+
+[**📥 Click Here to Download the APK**](https://github.com/Praveenreddy906630/CampusConnect/releases/latest/download/app-release.apk)
 
 ----------
 
@@ -111,7 +115,11 @@ Ensure you have the following installed on your system:
     
     ```bash
     git clone https://github.com/Praveenreddy906630/CampusConnect.git
+<<<<<<< Updated upstream
     cd College-Event-Management-System
+=======
+    cd CampusConnect
+>>>>>>> Stashed changes
     
     ```
     
@@ -251,17 +259,17 @@ chmod -R 775 bootstrap/cache
 
 Use these credentials to test different user roles:
 
-### 👨‍🎓 Student Account
+### 👨🎓 Student Account
 
 -   **Email**: `campusconnect.corporate+student@gmail.com`
 -   **Password**: `ZEBhCaXi`
 
-### 👨‍🏫 Coordinator Account
+### 👨🏫 Coordinator Account
 
 -   **Email**: `campusconnect.corporate+co@gmail.com`
 -   **Password**: `team.818`
 
-### 👨‍💼 Admin Account
+### 👨💼 Admin Account
 
 -   **Email**: `campusconnect.corporate+admin@gmail.com`
 -   **Password**: `team.818`
@@ -270,7 +278,11 @@ Use these credentials to test different user roles:
 
 ## 📸 Screenshots
 
+<<<<<<< Updated upstream
 View application screenshots in the **[sample images](https://github.com/Praveenreddy906630/CampusConnect/tree/main/SAMPLE%20PICTURES)** folder. Screenshots showcase:
+=======
+View application screenshots in the **[sample images](https://github.com/Praveenreddy906630/CampusConnect/tree/main/sample%20images)** folder. Screenshots showcase:
+>>>>>>> Stashed changes
 
 -   Admin Dashboard with Analytics
 -   Event Management Interface
@@ -310,18 +322,22 @@ This project uses images without specific copyright licensing. Please replace al
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/Nisarg-Vekariya/College-Event-Management-System/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/Praveenreddy906630/CampusConnect/blob/main/LICENSE) file for details.
 
 ----------
 
-## 👨‍💻 CampusConnect Team
+## 👨💻 CampusConnect Team
 
 **Developed with ❤️ by CampusConnect Team**
 
 ### Contact
 
 -   **Email**: campusconnect.corporate@gmail.com
+<<<<<<< Updated upstream
 -   **GitHub**: https://github.com/Praveenreddy906630/CampusConnect
+=======
+-   **GitHub**: [@Praveenreddy906630](https://github.com/Praveenreddy906630)
+>>>>>>> Stashed changes
 
 ----------
 
@@ -332,7 +348,11 @@ For any queries or support, please contact: **campusconnect.corporate@gmail.com*
 If you encounter any issues:
 
 -   Check existing documentation
+<<<<<<< Updated upstream
 -   Review the [sample images](https://github.com/Praveenreddy906630/CampusConnect/tree/main/SAMPLE%20PICTURES) for visual guidance
+=======
+-   Review the [sample images](https://github.com/Praveenreddy906630/CampusConnect/tree/main/sample%20images) for visual guidance
+>>>>>>> Stashed changes
 
 ----------
 

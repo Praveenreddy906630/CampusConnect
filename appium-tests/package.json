@@ -6,6 +6,7 @@
     "test:app": "node tests/app-e2e-tests.js"
   },
   "devDependencies": {
+    "exceljs": "^4.4.0",
     "webdriverio": "^8.40.0"
   }
 }

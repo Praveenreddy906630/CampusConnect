@@ -1,17 +1,13 @@
-import { remote } from "webdriverio";
+import { Builder, By, Key, until } from "selenium-webdriver";
+import chrome from "selenium-webdriver/chrome.js";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import ExcelJS from "exceljs";
+import HomePage from "../pages/HomePage.js";
 
-const APPIUM_SERVER = process.env.APPIUM_SERVER || "http://127.0.0.1:4723";
-const PLATFORM_NAME = process.env.PLATFORM_NAME || "Android";
-const DEVICE_NAME = process.env.DEVICE_NAME || "Android Emulator";
-const APP_PATH = process.env.APP_PATH;
-const APP_PACKAGE = process.env.APP_PACKAGE;
-const APP_ACTIVITY = process.env.APP_ACTIVITY;
-const TEST_EMAIL = process.env.TEST_EMAIL || "student@example.com";
-const TEST_PASSWORD = process.env.TEST_PASSWORD || "Password123!";
+const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:8000";
+const HEADLESS = process.env.HEADLESS !== "false";
 
 // Directories
 const RESULTS_DIR = path.join(process.cwd(), "..", "Test Results");
@@ -25,92 +21,14 @@ const SUMMARY_DIR = path.join(RESULTS_DIR, "Summary");
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 });
 
-function capabilities() {
-  const caps = {
-    platformName: PLATFORM_NAME,
-    "appium:deviceName": DEVICE_NAME,
-    "appium:automationName": PLATFORM_NAME.toLowerCase() === "ios" ? "XCUITest" : "UiAutomator2",
-    "appium:newCommandTimeout": 120,
-  };
-
-  if (APP_PATH) {
-    caps["appium:app"] = APP_PATH;
+function buildDriver() {
+  const options = new chrome.Options();
+  if (HEADLESS) {
+    options.addArguments("--headless=new", "--disable-gpu", "--window-size=1440,1000");
   }
-  if (APP_PACKAGE) {
-    caps["appium:appPackage"] = APP_PACKAGE;
-  }
-  if (APP_ACTIVITY) {
-    caps["appium:appActivity"] = APP_ACTIVITY;
-  }
-  return caps;
+  options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
+  return new Builder().forBrowser("chrome").setChromeOptions(options).build();
 }
-
-async function firstExisting(driver, selectors) {
-  for (const selector of selectors) {
-    const element = await driver.$(selector);
-    if (await element.isExisting()) {
-      return element;
-    }
-  }
-  throw new Error(`None of the selectors matched: ${selectors.join(", ")}`);
-}
-
-async function login(driver, email = TEST_EMAIL, password = TEST_PASSWORD) {
-  const emailField = await firstExisting(driver, [
-    'android=new UiSelector().resourceIdMatches(".*email.*")',
-    'android=new UiSelector().textContains("Email")',
-    '~email',
-  ]);
-  const passwordField = await firstExisting(driver, [
-    'android=new UiSelector().resourceIdMatches(".*password.*")',
-    'android=new UiSelector().textContains("Password")',
-    '~password',
-  ]);
-
-  await emailField.setValue(email);
-  await passwordField.setValue(password);
-  const loginButton = await firstExisting(driver, [
-    'android=new UiSelector().textMatches("(?i).*login.*|.*sign in.*")',
-    '~login',
-    '~sign-in',
-  ]);
-  await loginButton.click();
-}
-
-const tests = [
-  {
-    name: "app launches and shows an interactive screen",
-    run: async (driver) => {
-      const source = await driver.getPageSource();
-      assert.ok(source.length > 100, "Expected a populated app source after launch");
-    },
-  },
-  {
-    name: "login controls are present",
-    run: async (driver) => {
-      await firstExisting(driver, ['android=new UiSelector().textContains("Email")', "~email"]);
-      await firstExisting(driver, ['android=new UiSelector().textContains("Password")', "~password"]);
-    },
-  },
-  {
-    name: "invalid login shows validation or error feedback",
-    run: async (driver) => {
-      await login(driver, "invalid-user@example.com", "wrong-password");
-      await driver.pause(1500);
-      const source = await driver.getPageSource();
-      assert.match(source, /invalid|required|error|password|try again/i);
-    },
-  },
-  {
-    name: "valid login reaches an authenticated screen",
-    run: async (driver) => {
-      await login(driver);
-      await driver.pause(2500);
-      const source = await driver.getPageSource();
-      assert.match(source, /dashboard|events|profile|logout|CampusConnect/i);
-    },
-  },
-];
 
 async function generateExcel(results) {
   const workbook = new ExcelJS.Workbook();
@@ -150,14 +68,14 @@ function generateHTML(results, total, passed, failed, passRate) {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Appium E2E Execution Report</title>
+  <title>Live E2E Execution Report</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 p-8 font-sans">
   <div class="max-w-6xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-100">
     <div class="flex items-center justify-between mb-8 pb-4 border-b">
-      <h1 class="text-3xl font-bold text-gray-800">Appium E2E Test Execution Report</h1>
-      <span class="text-gray-500 text-sm">Generated: ${new Date().toLocaleString()}</span>
+      <h1 class="text-3xl font-bold text-gray-800">Live E2E Test Execution Report</h1>
+      <span class="text-gray-500 text-sm">Target: ${BASE_URL}</span>
     </div>
     
     <div class="grid grid-cols-4 gap-6 mb-10">
@@ -201,68 +119,94 @@ function generateHTML(results, total, passed, failed, passRate) {
   fs.writeFileSync(path.join(HTML_DIR, "execution-report.html"), html);
 }
 
-function generateMarkdown(results, total, passed, failed, passRate, buildNum, execDate) {
-  const md = `# Android Appium Test Summary
+function generateMarkdown(results, total, passed, failed, passRate) {
+  const failedTests = results.filter(r => r.status === 'FAIL').map(r => `- **${r.name}**: ${r.error}`).join('\n');
+  const md = `# Live GitHub Pages E2E Test Summary
 
-**Build Number:** ${buildNum}  
-**Execution Date:** ${execDate}  
+**Deployment URL:** ${BASE_URL}
 
 **Total Tests:** ${total}  
 **Passed:** ${passed}  
 **Failed:** ${failed}  
-**Pass Rate:** ${passRate}%  
+**Skipped:** 0  
+**Pass Percentage:** ${passRate}%  
 
-**Report URL:**
-https://${process.env.GITHUB_REPOSITORY_OWNER || 'Praveenreddy906630'}.github.io/${(process.env.GITHUB_REPOSITORY || 'CampusConnect').split('/').pop()}/reports/latest/execution-report.html
+${failed > 0 ? `**Failed Tests:**\n${failedTests}` : '**All tests passed successfully!**'}
 `;
   fs.writeFileSync(path.join(SUMMARY_DIR, "summary.md"), md);
 }
 
-async function main() {
-  if (!APP_PATH && !APP_PACKAGE) {
-    console.warn("WARN: Set APP_PATH for an .apk/.ipa or APP_PACKAGE/APP_ACTIVITY for an installed Android app.");
+const tests = [
+  {
+    name: "Home Page loads and displays brand logo",
+    run: async (driver, homePage) => {
+      await homePage.navigate(BASE_URL);
+      await homePage.waitForPageLoad();
+      assert.ok(await homePage.isBrandVisible(), "Brand logo should be visible");
+    },
+  },
+  {
+    name: "Hero section heading is correct",
+    run: async (driver, homePage) => {
+      await homePage.navigate(BASE_URL);
+      await homePage.waitForPageLoad();
+      const heading = await homePage.getHeroHeadingText();
+      assert.match(heading, /Manage Events/i, "Heading should mention Manage Events");
+    },
+  },
+  {
+    name: "CTA Button is present",
+    run: async (driver, homePage) => {
+      await homePage.navigate(BASE_URL);
+      await homePage.waitForPageLoad();
+      assert.ok(await homePage.isCtaButtonVisible(), "CTA Button should be visible");
+    },
+  },
+  {
+    name: "Hero Image renders correctly",
+    run: async (driver, homePage) => {
+      await homePage.navigate(BASE_URL);
+      await homePage.waitForPageLoad();
+      assert.ok(await homePage.isHeroImageVisible(), "Hero image should be visible");
+    },
   }
+];
 
-  const driver = await remote({
-    hostname: new URL(APPIUM_SERVER).hostname,
-    port: Number(new URL(APPIUM_SERVER).port || 4723),
-    path: new URL(APPIUM_SERVER).pathname === "/" ? "/" : new URL(APPIUM_SERVER).pathname,
-    capabilities: capabilities(),
-  });
-
+async function main() {
+  const driver = await buildDriver();
+  const homePage = new HomePage(driver);
   const results = [];
   try {
     for (const test of tests) {
       const started = Date.now();
       let screenshotName = '';
       try {
-        await test.run(driver);
+        await test.run(driver, homePage);
         screenshotName = `${test.name.replace(/\s+/g, "_")}_PASS.png`;
-        await driver.saveScreenshot(path.join(SCREENSHOTS_DIR, screenshotName));
+        const image = await driver.takeScreenshot();
+        fs.writeFileSync(path.join(SCREENSHOTS_DIR, screenshotName), image, 'base64');
         results.push({ name: test.name, status: "PASS", durationMs: Date.now() - started, screenshot: screenshotName });
       } catch (error) {
         screenshotName = `${test.name.replace(/\s+/g, "_")}_FAIL.png`;
-        await driver.saveScreenshot(path.join(SCREENSHOTS_DIR, screenshotName));
+        const image = await driver.takeScreenshot();
+        fs.writeFileSync(path.join(SCREENSHOTS_DIR, screenshotName), image, 'base64');
         results.push({ name: test.name, status: "FAIL", durationMs: Date.now() - started, error: error.message, screenshot: screenshotName });
       }
     }
   } finally {
-    await driver.deleteSession();
+    await driver.quit();
   }
 
   const total = results.length;
   const passed = results.filter(r => r.status === "PASS").length;
   const failed = total - passed;
   const passRate = total === 0 ? 0 : Math.round((passed / total) * 100);
-  const buildNum = process.env.GITHUB_RUN_NUMBER || 'Local';
-  const execDate = new Date().toISOString().split('T')[0];
 
   await generateExcel(results);
   generateHTML(results, total, passed, failed, passRate);
-  generateMarkdown(results, total, passed, failed, passRate, buildNum, execDate);
+  generateMarkdown(results, total, passed, failed, passRate);
 
   console.table(results);
-  
   if (failed > 0) {
     process.exitCode = 1;
   }

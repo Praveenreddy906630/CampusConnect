@@ -3,9 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test:login": "node tests/login-tests.js"
+    "test:e2e": "node tests/e2e-tests.js"
   },
   "devDependencies": {
+    "exceljs": "^4.4.0",
     "selenium-webdriver": "^4.23.0"
   }
 }
