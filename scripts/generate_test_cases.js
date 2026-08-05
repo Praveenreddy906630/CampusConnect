@@ -19,7 +19,7 @@ async function generateTestCases() {
         { header: 'Status', key: 'status', width: 15 }
     ];
 
-    const modules = ['Authentication', 'Event Registration', 'Role Management', 'Database Connection', 'Container Deployment', 'API Endpoints'];
+    const modules = ['UI/UX Test', 'Functional Testing', 'Unit Testing', 'Validation Test', 'Deployable Status', 'API & Integration'];
     let count = 1;
 
     // Generate 114 unique test cases dynamically (6 modules * 19 tests = 114)
