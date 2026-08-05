@@ -1,0 +1,27 @@
+name: Load Testing
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  load-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run k6 Load Test
+        env:
+          BASE_URL: "https://praveenreddy906630.github.io/CampusConnect/"
+          VUS: 100
+          DURATION: 1m
+        run: k6 run load-tests/baseline-load-test.js

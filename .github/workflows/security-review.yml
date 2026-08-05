@@ -1,0 +1,67 @@
+name: Vulnerability & Security 300 E2E Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  security-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Detect Backend Technology
+        run: |
+          echo "Detecting backend stack..."
+          if [ -f "composer.json" ]; then
+            echo "Detected PHP / Laravel backend."
+          elif [ -f "package.json" ]; then
+            echo "Detected Node.js frontend/backend."
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Tools
+        run: |
+          npm install -g semgrep gitleaks
+          sudo apt-get install -y trivy
+
+      - name: Run SAST Scans
+        run: |
+          echo "Running SAST Scans..."
+          semgrep scan --config auto --json -o semgrep-results.json || true
+          
+      - name: Run Secret Scans
+        run: |
+          gitleaks detect -v --report-format json --report-path gitleaks-results.json || true
+
+      - name: Generate Reports
+        run: |
+          echo "Generating security artifacts..."
+          node scripts/security/generate-security-artifacts.mjs || true
+
+      - name: Upload Security Reports Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Security_Review_Reports
+          path: Vulnerability Test Results/
+
+      - name: Publish Action Summary
+        if: always()
+        run: |
+          if [ -f "Vulnerability Test Results/executive-summary.md" ]; then
+            cat "Vulnerability Test Results/executive-summary.md" >> $GITHUB_STEP_SUMMARY
+          fi
