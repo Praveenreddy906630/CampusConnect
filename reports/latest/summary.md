@@ -1,6 +1,6 @@
 # Android Appium Test Summary
 
-**Build Number:** 17  
+**Build Number:** 18  
 **Execution Date:** $(date +'%Y-%m-%d')  
 
 **Total Tests:** 400  
