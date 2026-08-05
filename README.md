@@ -101,7 +101,7 @@ Ensure you have the following installed on your system:
 
 -   PHP >= 8.1
 -   Composer
--   MySQL >= 5.7
+-   POSTGRESQL >= 5.7
 -   Node.js & NPM
 -   Git
 
@@ -110,7 +110,7 @@ Ensure you have the following installed on your system:
 1.  **Clone the Repository**
     
     ```bash
-    git clone https://github.com/Nisarg-Vekariya/College-Event-Management-System.git
+    git clone https://github.com/Praveenreddy906630/CampusConnect.git
     cd College-Event-Management-System
     
     ```
@@ -148,7 +148,7 @@ Ensure you have the following installed on your system:
     Open `.env` file and update the following:
     
     ```env
-    DB_CONNECTION=mysql
+    DB_CONNECTION=PostgreSQL
     DB_HOST=127.0.0.1
     DB_PORT=3306
     DB_DATABASE=your_database_name
@@ -162,7 +162,7 @@ Ensure you have the following installed on your system:
     Import the provided SQL file to set up the complete database with tables, sample data, and configurations:
     
     ```bash
-    mysql -u your_username -p your_database_name < cemsys.sql
+    postgresql -u your_username -p your_database_name  
     
     ```
     
@@ -171,7 +171,7 @@ Ensure you have the following installed on your system:
     -   Open phpMyAdmin
     -   Select your database
     -   Click on "Import" tab
-    -   Choose `cemsys.sql` file
+    -   Choose `` file
     -   Click "Go"
     
     ```bash
@@ -270,7 +270,7 @@ Use these credentials to test different user roles:
 
 ## 📸 Screenshots
 
-View application screenshots in the **[sample images](https://github.com/Nisarg-Vekariya/College-Event-Management-System/tree/main/sample%20images)** folder. Screenshots showcase:
+View application screenshots in the **[sample images](https://github.com/Praveenreddy906630/CampusConnect/tree/main/SAMPLE%20PICTURES)** folder. Screenshots showcase:
 
 -   Admin Dashboard with Analytics
 -   Event Management Interface
@@ -321,7 +321,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 ### Contact
 
 -   **Email**: campusconnect.corporate@gmail.com
--   **GitHub**: [@Nisarg-Vekariya](https://github.com/Nisarg-Vekariya)
+-   **GitHub**: https://github.com/Praveenreddy906630/CampusConnect
 
 ----------
 
@@ -332,7 +332,7 @@ For any queries or support, please contact: **campusconnect.corporate@gmail.com*
 If you encounter any issues:
 
 -   Check existing documentation
--   Review the [sample images](https://github.com/Nisarg-Vekariya/College-Event-Management-System/tree/main/sample%20images) for visual guidance
+-   Review the [sample images](https://github.com/Praveenreddy906630/CampusConnect/tree/main/SAMPLE%20PICTURES) for visual guidance
 
 ----------
 
