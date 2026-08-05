@@ -22,9 +22,9 @@ async function generateTestCases() {
     const modules = ['UI/UX Test', 'Functional Testing', 'Unit Testing', 'Validation Test', 'Deployable Status', 'API & Integration'];
     let count = 1;
 
-    // Generate 360 unique test cases dynamically (6 modules * 60 tests = 360)
+    // Generate 300 unique test cases dynamically (6 modules * 50 tests = 300)
     modules.forEach(mod => {
-        for (let i = 1; i <= 60; i++) {
+        for (let i = 1; i <= 50; i++) {
             sheet.addRow({
                 id: `TC-${count.toString().padStart(3, '0')}`,
                 module: mod,
@@ -36,8 +36,8 @@ async function generateTestCases() {
         }
     });
 
-    await workbook.xlsx.writeFile(path.join(outputDir, '100_Unique_Test_Cases.xlsx'));
-    console.log("Successfully generated 100+ Test Cases Excel file!");
+    await workbook.xlsx.writeFile(path.join(outputDir, '300_Unique_Test_Cases.xlsx'));
+    console.log("Successfully generated 300 Unique Test Cases Excel file!");
 }
 
 generateTestCases().catch(err => {
