@@ -115,11 +115,7 @@ Ensure you have the following installed on your system:
     
     ```bash
     git clone https://github.com/Praveenreddy906630/CampusConnect.git
-<<<<<<< Updated upstream
-    cd College-Event-Management-System
-=======
     cd CampusConnect
->>>>>>> Stashed changes
     
     ```
     
@@ -278,11 +274,7 @@ Use these credentials to test different user roles:
 
 ## 📸 Screenshots
 
-<<<<<<< Updated upstream
 View application screenshots in the **[sample images](https://github.com/Praveenreddy906630/CampusConnect/tree/main/SAMPLE%20PICTURES)** folder. Screenshots showcase:
-=======
-View application screenshots in the **[sample images](https://github.com/Praveenreddy906630/CampusConnect/tree/main/sample%20images)** folder. Screenshots showcase:
->>>>>>> Stashed changes
 
 -   Admin Dashboard with Analytics
 -   Event Management Interface
@@ -333,11 +325,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 ### Contact
 
 -   **Email**: campusconnect.corporate@gmail.com
-<<<<<<< Updated upstream
--   **GitHub**: https://github.com/Praveenreddy906630/CampusConnect
-=======
 -   **GitHub**: [@Praveenreddy906630](https://github.com/Praveenreddy906630)
->>>>>>> Stashed changes
 
 ----------
 
@@ -348,11 +336,7 @@ For any queries or support, please contact: **campusconnect.corporate@gmail.com*
 If you encounter any issues:
 
 -   Check existing documentation
-<<<<<<< Updated upstream
 -   Review the [sample images](https://github.com/Praveenreddy906630/CampusConnect/tree/main/SAMPLE%20PICTURES) for visual guidance
-=======
--   Review the [sample images](https://github.com/Praveenreddy906630/CampusConnect/tree/main/sample%20images) for visual guidance
->>>>>>> Stashed changes
 
 ----------
 
