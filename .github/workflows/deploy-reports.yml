@@ -2,7 +2,7 @@ name: Deploy Reports to GitHub Pages
 
 on:
   workflow_run:
-    workflows: ["Appium Mobile E2E Tests"]
+    workflows: ["Selenium E2E Tests"]
     types:
       - completed
   workflow_dispatch:
