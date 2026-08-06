@@ -10,7 +10,7 @@
 
 ## 📱 Download Android App
 
-[**📥 Click Here to Download the APK**](https://github.com/Praveenreddy906630/CampusConnect/releases/latest/download/app-release.apk)
+coming soon
 
 ----------
 
