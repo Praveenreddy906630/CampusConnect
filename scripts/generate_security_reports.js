@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const ExcelJS = require('exceljs');
+import fs from 'fs';
+import path from 'path';
+import ExcelJS from 'exceljs';
 
 async function generateReports() {
     const outputDir = path.join(process.cwd(), 'Vulnerability Test Results');
