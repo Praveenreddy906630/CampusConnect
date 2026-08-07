@@ -81,7 +81,7 @@ class EventImportExportController extends Controller
         ]);
 
         $file = $request->file('csv_file');
-        $handle = fopen($file, 'r');
+        $handle = fopen($file->getRealPath(), 'r');
 
         $header = fgetcsv($handle);
         $header = array_map(fn($h) => strtolower(trim($h)), $header);

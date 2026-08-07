@@ -461,67 +461,69 @@
 
     @include('partials.footer')
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" crossorigin="anonymous"></script>
 
     <!-- Initialize GSAP ScrollTrigger and page animations -->
     <script>
-        // Register ScrollTrigger plugin
-        gsap.registerPlugin(ScrollTrigger);
+        // Register ScrollTrigger plugin if GSAP is loaded
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+        }
 
         // Loading Screen Management
-        window.addEventListener('load', function() {
-            // Minimum loading time for better UX
-            setTimeout(function() {
-                const loadingScreen = document.getElementById('loading-screen');
-                const body = document.body;
-                
-                // Add fade out class
+        function hideLoader() {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen && loadingScreen.style.display !== 'none') {
                 loadingScreen.classList.add('fade-out');
-                
-                // Remove loading class from body to restore scroll
                 setTimeout(function() {
-                    body.classList.remove('loading');
+                    document.body.classList.remove('loading');
                     loadingScreen.style.display = 'none';
-                    
-                    // Trigger entrance animations after loader disappears
                     animatePageEntrance();
-                }, 800);
-            }, 500); // Minimum 0.5 seconds loading time
-        });
+                }, 400);
+            }
+        }
+
+        if (document.readyState === 'complete') {
+            hideLoader();
+        } else {
+            window.addEventListener('load', hideLoader);
+            setTimeout(hideLoader, 1200); // Fail-safe 1.2s timeout
+        }
 
         // Page entrance animation
         function animatePageEntrance() {
-            // Animate main content entrance
-            gsap.from(".main-content", {
-                opacity: 0,
-                y: 30,
-                duration: 0.8,
-                ease: "power3.out",
-                delay: 0.2
-            });
-
-            // Animate navbar entrance
-            gsap.from("nav", {
-                opacity: 0,
-                y: -20,
-                duration: 0.6,
-                ease: "power3.out"
-            });
-
-            // Animate footer entrance
-            gsap.from("footer", {
-                opacity: 0,
-                y: 20,
-                duration: 0.6,
-                ease: "power3.out",
-                delay: 0.3
-            });
+            if (typeof gsap !== 'undefined') {
+                try {
+                    gsap.from(".main-content", {
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.6,
+                        ease: "power2.out"
+                    });
+                    gsap.from("nav", {
+                        opacity: 0,
+                        y: -15,
+                        duration: 0.5,
+                        ease: "power2.out"
+                    });
+                    gsap.from("footer", {
+                        opacity: 0,
+                        y: 15,
+                        duration: 0.5,
+                        ease: "power2.out"
+                    });
+                } catch (e) {
+                    console.warn("GSAP entrance animation skipped:", e);
+                }
+            }
         }
 
         // Refresh ScrollTrigger on window resize
         window.addEventListener('resize', () => {
-            ScrollTrigger.refresh();
+            if (typeof ScrollTrigger !== 'undefined') {
+                ScrollTrigger.refresh();
+            }
         });
 
         // Smooth scroll for anchor links
@@ -537,15 +539,6 @@
                 }
             });
         });
-
-        // Optional: Add loading progress simulation
-        let progress = 0;
-        const progressInterval = setInterval(function() {
-            progress += Math.random() * 15;
-            if (progress >= 100) {
-                clearInterval(progressInterval);
-            }
-        }, 200);
     </script>
 
 </body>

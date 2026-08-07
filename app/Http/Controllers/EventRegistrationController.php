@@ -133,7 +133,8 @@ class EventRegistrationController extends Controller
                 $first = $group->first();
                 $first->is_leader = $first->leader_enrolment === $userEnrol;
                 return $first;
-            });
+            })
+            ->filter(fn($r) => $r->event !== null);
 
         // Registrations by category
         $categoryStats = [

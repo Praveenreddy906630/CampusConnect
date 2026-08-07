@@ -1,11 +1,12 @@
-import { StyleSheet, ActivityIndicator, View } from 'react-native';
+import { StyleSheet, ActivityIndicator, Platform, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 
 export default function App() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <WebView 
-        source={{ uri: 'http://10.71.157.120:8000/login' }} 
+        source={{ uri: 'http://10.23.173.120:8000/login' }} 
         style={styles.webview}
         bounces={false}
         overScrollMode="never"
@@ -23,14 +24,15 @@ export default function App() {
           />
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0a0a0a', // Dark background matching the splash screen
+    backgroundColor: '#ffffff', // Use white to match the top bar of the website
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   webview: {
     flex: 1,

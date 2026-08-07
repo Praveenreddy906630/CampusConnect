@@ -32,7 +32,6 @@ use App\Http\Middleware\CoordinatorMiddleware;
 // ---------------------------
 // Public Routes
 // ---------------------------
-Route::get('/', fn() => view('index'));
 
 // ---------------------------
 // Registration Period Restricted Routes
