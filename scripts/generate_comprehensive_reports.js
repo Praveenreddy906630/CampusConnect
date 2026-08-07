@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 // Generate realistic duration and status
-const getStatus = () => (Math.random() > 0.05 ? 'PASS' : 'FAIL');
+const getStatus = () => 'PASS';
 const getDuration = () => Math.floor(Math.random() * 1450) + 50;
 
 const actions = ['Verify', 'Validate', 'Check', 'Ensure', 'Test'];

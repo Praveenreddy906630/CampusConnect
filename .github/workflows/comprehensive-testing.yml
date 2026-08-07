@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '18'
       - name: Install dependencies
-        run: npm install exceljs
+        run: npm install exceljs --no-save --legacy-peer-deps
       - name: Generate Core Reports
         run: |
           node scripts/generate_comprehensive_reports.js
