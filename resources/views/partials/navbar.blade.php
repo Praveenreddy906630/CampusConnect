@@ -7,7 +7,6 @@
             <div class="flex-shrink-0 cursor-pointer" id="logo">
                 <a href="{{ url('/') }}">
                     <h1 class="text-xl sm:text-2xl lg:text-3xl font-heading font-bold tracking-wider transition-all duration-300 hover:scale-105">
-                        <span class="text-2xl animate-bounce inline-block">🎉</span>
                         <span class="text-primary drop-shadow-lg">
                             CampusConnect
                         </span>

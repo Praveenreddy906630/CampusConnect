@@ -200,7 +200,6 @@
 
         <!-- Header Section -->
         <div class="login-header px-8 py-8 text-center border-b border-gray-100">
-            <div class="brand-icon text-5xl mb-4">🎉</div>
             <h1 class="brand-title text-2xl font-heading font-bold text-text-dark mb-2">
                 Welcome to <span class="text-primary">CampusConnect</span>
             </h1>

@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Coordinator Panel - CampusConnect</title>
     <script src="https://cdn.tailwindcss.com"></script>
      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Roboto&display=swap" rel="stylesheet">
@@ -88,15 +89,16 @@
     </style>
 </head>
 
-<body class="bg-background font-body flex">
+<body class="bg-background font-body flex overflow-x-hidden w-full">
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="w-64 bg-white shadow-md h-screen fixed flex flex-col justify-between transition-all duration-300 ease-in-out">
+    <aside id="sidebar" class="w-64 z-50 bg-white shadow-md h-screen fixed flex flex-col justify-between transition-all duration-300 ease-in-out -translate-x-full md:translate-x-0">
         <div>
             <!-- Logo / Toggle -->
             <div id="sidebar-header" class="flex items-center justify-between px-4 py-6 text-2xl font-heading font-bold text-text-dark transition-all duration-300">
                 <a href="{{ url('/') }}" id="sidebar-title" class="hover:text-primary transition-colors whitespace-nowrap">CampusConnect</a>
-                <button onclick="toggleSidebar()" class="text-2xl focus:outline-none text-text-dark" id="toggle-btn-sidebar">☰</button>
+                <button onclick="toggleSidebar()" class="text-2xl focus:outline-none text-text-dark hidden md:block" id="toggle-btn-sidebar">☰</button>
+                <button onclick="toggleMobileSidebar()" class="text-2xl focus:outline-none text-text-dark md:hidden" id="close-btn-sidebar">✕</button>
             </div>
 
             <!-- Navigation -->
@@ -129,8 +131,13 @@
     </aside>
 
     <!-- Main Content -->
-    <div id="main" class="ml-64 flex-1 transition-all duration-300 ease-in-out">
-        <main class="p-8">
+    <div id="main" class="md:ml-64 flex-1 w-full min-w-0 transition-all duration-300 ease-in-out">
+        <!-- Mobile Header/Toggle -->
+        <div class="md:hidden flex items-center gap-4 bg-white shadow p-4 mb-4">
+            <button onclick="toggleMobileSidebar()" class="text-2xl text-text-dark">☰</button>
+            <span class="text-xl font-bold font-heading">CampusConnect</span>
+        </div>
+        <main class="p-4 md:p-8 overflow-x-auto w-full">
             <div id="coordinator-content">
                 @yield('content')
             </div>
@@ -140,30 +147,43 @@
     <!-- Toggle & Page Loader -->
     <script>
         function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const main = document.getElementById('main');
-            const navTexts = document.querySelectorAll('.nav-text');
-            const title = document.getElementById('sidebar-title');
-            const footer = document.getElementById('sidebar-footer');
+            if (window.innerWidth >= 768) {
+                const sidebar = document.getElementById('sidebar');
+                const main = document.getElementById('main');
+                const navTexts = document.querySelectorAll('.nav-text');
+                const title = document.getElementById('sidebar-title');
+                const footer = document.getElementById('sidebar-footer');
 
-            const isCollapsed = sidebar.classList.contains('w-16');
+                const isCollapsed = sidebar.classList.contains('w-16');
 
-            if (!isCollapsed) {
-                sidebar.classList.remove('w-64');
-                sidebar.classList.add('w-16');
-                main.classList.remove('ml-64');
-                main.classList.add('ml-16');
-                navTexts.forEach(t => t.classList.add('hidden'));
-                title.classList.add('hidden');
-                footer.classList.add('hidden');
+                if (!isCollapsed) {
+                    sidebar.classList.remove('w-64');
+                    sidebar.classList.add('w-16');
+                    main.classList.remove('md:ml-64');
+                    main.classList.add('md:ml-16');
+                    navTexts.forEach(t => t.classList.add('hidden'));
+                    title.classList.add('hidden');
+                    if(footer) footer.classList.add('hidden');
+                } else {
+                    sidebar.classList.remove('w-16');
+                    sidebar.classList.add('w-64');
+                    main.classList.remove('md:ml-16');
+                    main.classList.add('md:ml-64');
+                    navTexts.forEach(t => t.classList.remove('hidden'));
+                    title.classList.remove('hidden');
+                    if(footer) footer.classList.remove('hidden');
+                }
             } else {
-                sidebar.classList.remove('w-16');
-                sidebar.classList.add('w-64');
-                main.classList.remove('ml-16');
-                main.classList.add('ml-64');
-                navTexts.forEach(t => t.classList.remove('hidden'));
-                title.classList.remove('hidden');
-                footer.classList.remove('hidden');
+                toggleMobileSidebar();
+            }
+        }
+
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+            } else {
+                sidebar.classList.add('-translate-x-full');
             }
         }
 
@@ -180,9 +200,24 @@
 
             history.pushState({}, '', url);
 
+            // Auto-close sidebar on mobile after clicking a link
+            if (window.innerWidth < 768) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            }
+
             fetch(url)
-                .then(res => res.text())
+                .then(res => {
+                    if (res.redirected) {
+                        window.location.href = res.url;
+                        return null;
+                    }
+                    return res.text();
+                })
                 .then(html => {
+                    if (!html) return;
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
                     const newContent = doc.querySelector('#coordinator-content');

@@ -27,6 +27,11 @@ class HomeController extends Controller
         // Get settings
         $settings = Setting::first();
 
+        // Check if user is logged in and is a regular user (student)
+        if (auth()->check() && auth()->user()->user_type !== 'admin' && auth()->user()->user_type !== 'coordinator') {
+            return view('student.dashboard', compact('eventsByType', 'eventCounts', 'settings', 'events'));
+        }
+
         return view('index', compact('eventsByType', 'eventCounts', 'settings'));
     }
 }

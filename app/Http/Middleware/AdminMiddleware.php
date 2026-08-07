@@ -11,7 +11,7 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::check() || Auth::user()->user_type !== 'admin') {
-            return redirect('/'); // or a 403 page
+            return redirect('/login')->with('error', 'Please log in to access this page.');
         }
 
         return $next($request);

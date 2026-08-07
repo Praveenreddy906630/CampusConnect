@@ -1,240 +1,111 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="p-6 font-body">
-    <h1 class="text-3xl font-heading font-bold mb-8 text-text-dark">📊 Dashboard</h1>
-
-    {{-- Stats Cards --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500 hover:shadow-lg transition-shadow">
-            <div class="flex items-center">
-                <div class="p-3 bg-blue-100 rounded-full mr-4">
-                    <span class="text-2xl text-blue-600">👥</span>
-                </div>
-                <div>
-                    <h2 class="text-lg font-heading font-semibold text-text-light">Total Users</h2>
-                    <p class="text-3xl font-heading font-bold text-text-dark mt-1">{{ $totalUsers }}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500 hover:shadow-lg transition-shadow">
-            <div class="flex items-center">
-                <div class="p-3 bg-green-100 rounded-full mr-4">
-                    <span class="text-2xl text-green-600">🎭</span>
-                </div>
-                <div>
-                    <h2 class="text-lg font-heading font-semibold text-text-light">Events</h2>
-                    <p class="text-3xl font-heading font-bold text-text-dark mt-1">{{ $totalEvents }}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-primary hover:shadow-lg transition-shadow">
-            <div class="flex items-center">
-                <div class="p-3 bg-red-100 rounded-full mr-4">
-                    <span class="text-2xl text-primary">📝</span>
-                </div>
-                <div>
-                    <h2 class="text-lg font-heading font-semibold text-text-light">Registrations</h2>
-                    <p class="text-3xl font-heading font-bold text-text-dark mt-1">{{ $totalRegistrations }}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-yellow-500 hover:shadow-lg transition-shadow">
-            <div class="flex items-center">
-                <div class="p-3 bg-yellow-100 rounded-full mr-4">
-                    <span class="text-2xl text-yellow-600">🏆</span>
-                </div>
-                <div>
-                    <h2 class="text-lg font-heading font-semibold text-text-light">SOTY Applications</h2>
-                    <p class="text-3xl font-heading font-bold text-text-dark mt-1">{{ $totalSoty }}</p>
-                </div>
-            </div>
-        </div>
+<div class="md:p-6 font-body">
+    {{-- Mobile Greeting Header --}}
+    <div class="mb-6 md:mb-8 pt-2">
+        <h2 class="text-sm text-text-light font-medium">Good Evening,</h2>
+        <h1 class="text-2xl font-heading font-bold text-text-dark">{{ Auth::user()->name ?? 'Admin' }} 👋</h1>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-        {{-- Recent Registrations --}}
-        <div class="bg-white rounded-xl shadow-md p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-heading font-semibold text-text-dark">🆕 Recent Registrations</h2>
+    {{-- Upcoming Events --}}
+    <div class="mb-8">
+        <h3 class="text-lg font-heading font-bold text-text-dark mb-4">Upcoming Events</h3>
+        <div class="flex overflow-x-auto pb-4 gap-4 snap-x hide-scrollbar">
+            @forelse($events->take(3) as $event)
+            <div class="min-w-[280px] md:min-w-[320px] bg-gradient-to-br from-primary to-red-700 rounded-3xl shadow-lg p-5 text-white snap-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 opacity-10 text-8xl -mt-4 -mr-4">🎭</div>
+                <h4 class="text-xl font-heading font-bold mb-1">{{ $event->event_name }}</h4>
+                <p class="text-sm text-red-100 mb-4">{{ $event->event_date ? \Carbon\Carbon::parse($event->event_date)->format('M d, Y') : 'TBA' }}</p>
+                <a href="{{ route('admin.events.index') }}" class="inline-block bg-white text-primary px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-100 transition-colors shadow-sm">
+                    View Details →
+                </a>
             </div>
-
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-left text-sm font-body">
-                    <thead>
-                        <tr class="border-b">
-                            <th class="px-4 py-3 text-text-dark font-heading">Enrolment</th>
-                            <th class="px-4 py-3 text-text-dark font-heading">Name</th>
-                            <th class="px-4 py-3 text-text-dark font-heading">Event</th>
-                            <th class="px-4 py-3 text-text-dark font-heading">Registered</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($recentRegistrations as $reg)
-                        <tr class="border-b hover:bg-gray-50 transition-colors">
-                            <td class="px-4 py-3 text-text-dark font-medium">{{ $reg->participant_enrolment }}</td>
-                            <td class="px-4 py-3 text-text-dark">{{ $reg->participant->full_name ?? '-' }}</td>
-                            <td class="px-4 py-3 text-text-dark">{{ $reg->event->event_name ?? '-' }}</td>
-                            <td class="px-4 py-3 text-text-light text-sm">{{ $reg->created_at->format('M d, H:i') }}</td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="4" class="px-4 py-6 text-center text-text-light">No recent registrations.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            @empty
+            <div class="w-full bg-white rounded-3xl shadow-sm border border-gray-100 p-6 text-center">
+                <p class="text-text-light text-sm">No upcoming events.</p>
             </div>
-        </div>
-
-        {{-- Recent SOTY Applications --}}
-        <div class="bg-white rounded-xl shadow-md p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-heading font-semibold text-text-dark">🏆 Recent SOTY Applications</h2>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-left text-sm font-body">
-                    <thead>
-                        <tr class="border-b">
-                            <th class="px-4 py-3 text-text-dark font-heading">Enrolment</th>
-                            <th class="px-4 py-3 text-text-dark font-heading">Name</th>
-                            <th class="px-4 py-3 text-text-dark font-heading">CGPA</th>
-                            <th class="px-4 py-3 text-text-dark font-heading">Submitted</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($recentSoty as $soty)
-                        <tr class="border-b hover:bg-gray-50 transition-colors">
-                            <td class="px-4 py-3 text-text-dark font-medium">{{ $soty->enrolment_no }}</td>
-                            <td class="px-4 py-3 text-text-dark">{{ $soty->student->full_name ?? '-' }}</td>
-                            <td class="px-4 py-3 text-text-dark">
-                                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
-                                    {{ number_format(($soty->even_cgpa + $soty->odd_cgpa) / 2, 2) }}
-                                </span>
-                            </td>
-                            <td class="px-4 py-3 text-text-light text-sm">{{ $soty->created_at->format('M d, H:i') }}</td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="4" class="px-4 py-6 text-center text-text-light">No recent applications.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+            @endforelse
         </div>
     </div>
-
-    @php
-    // Departments list (from results). flatten(1) ensures one-level flattening.
-    $departments = $eventStats
-        ->flatMap(fn($group) => collect($group)->pluck('school_code'))
-        ->filter()   // remove empty/null if any
-        ->unique()
-        ->sort()
-        ->values();
-
-    // Fallback: if no departments found in stats (no regs yet), pull distinct school_code
-    if ($departments->isEmpty()) {
-        $departments = \DB::table('students')
-            ->distinct()
-            ->whereNotNull('school_code')
-            ->pluck('school_code')
-            ->sort()
-            ->values();
-    }
-@endphp
-
-<table class="min-w-full text-sm text-left border-collapse">
-    <thead>
-        <tr class="bg-gray-100 border-b">
-            <th rowspan="2" class="px-4 py-3 font-semibold border text-center">Event</th>
-            @foreach ($departments as $dept)
-                <th colspan="2" class="px-4 py-3 font-semibold border text-center">{{ $dept }}</th>
-            @endforeach
-            <th rowspan="2" class="px-4 py-3 font-semibold border text-center">Total</th>
-        </tr>
-        <tr class="bg-gray-50 border-b">
-            @foreach ($departments as $dept)
-                <th class="px-4 py-2 border text-center">Boys</th>
-                <th class="px-4 py-2 border text-center">Girls</th>
-            @endforeach
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($events as $event)
-            @php
-                // get rows for this event (collection keyed by event_id)
-                $rows = $eventStats->get($event->event_id, collect());
-                $eventTotals = ['boys' => 0, 'girls' => 0];
-            @endphp
-
-            <tr class="border-b hover:bg-gray-50">
-                <td class="px-4 py-3 font-semibold text-text-dark">{{ $event->event_name }}</td>
-
-                @foreach ($departments as $dept)
-                    @php
-                        // rows is a collection of stdClass rows for this event
-                        $record = $rows->firstWhere('school_code', $dept);
-                        $b = $record->boys ?? 0;
-                        $g = $record->girls ?? 0;
-                        $eventTotals['boys'] += (int) $b;
-                        $eventTotals['girls'] += (int) $g;
-                    @endphp
-                    <td class="px-4 py-3 text-center">{{ $b }}</td>
-                    <td class="px-4 py-3 text-center">{{ $g }}</td>
-                @endforeach
-
-                <td class="px-4 py-3 text-center font-semibold text-primary">
-                    {{ $eventTotals['boys'] + $eventTotals['girls'] }}
-                </td>
-            </tr>
-        @endforeach
-
-        {{-- Total row --}}
-        <tr class="bg-gray-100 font-semibold border-t-2">
-            <td class="px-4 py-3 text-right">Total</td>
-
-            @foreach ($departments as $dept)
-                @php
-                    // flatten one level to get every row object across events
-                    $deptRows = $eventStats->flatten(1)->where('school_code', $dept);
-                    $boysSum = $deptRows->sum('boys');
-                    $girlsSum = $deptRows->sum('girls');
-                @endphp
-                <td class="px-4 py-3 text-center">{{ $boysSum }}</td>
-                <td class="px-4 py-3 text-center">{{ $girlsSum }}</td>
-            @endforeach
-
-            <td class="px-4 py-3 text-center text-primary">
-                {{ $eventStats->flatten(1)->sum('total') }}
-            </td>
-        </tr>
-    </tbody>
-</table>
-
 
     {{-- Quick Actions --}}
-    <div class="bg-white rounded-xl shadow-md p-6">
-        <h2 class="text-xl font-heading font-semibold mb-6 text-text-dark">⚡ Quick Actions</h2>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <a href="{{ route('admin.events.index') }}" class="bg-blue-100 hover:bg-blue-200 text-blue-800 p-4 rounded-lg text-center transition-colors">
-                <div class="text-2xl mb-2">🎭</div>
-                <div class="font-heading font-semibold">Manage Events</div>
+    <div class="mb-8">
+        <h3 class="text-lg font-heading font-bold text-text-dark mb-4">Quick Actions</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <a href="{{ route('admin.events.index') }}" class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-3 hover:shadow-md transition-all active:scale-95">
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl">➕</div>
+                <span class="text-xs font-semibold text-text-dark text-center">Create Event</span>
             </a>
-            <a href="{{ route('admin.registrations.index') }}" class="bg-green-100 hover:bg-green-200 text-green-800 p-4 rounded-lg text-center transition-colors">
-                <div class="text-2xl mb-2">📝</div>
-                <div class="font-heading font-semibold">View Registrations</div>
+            <a href="{{ route('admin.registrations.index') }}" class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-3 hover:shadow-md transition-all active:scale-95">
+                <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center text-2xl">📝</div>
+                <span class="text-xs font-semibold text-text-dark text-center">Registrations</span>
             </a>
-            <a href="{{ route('admin.soty.index') }}" class="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 p-4 rounded-lg text-center transition-colors">
-                <div class="text-2xl mb-2">🏆</div>
-                <div class="font-heading font-semibold">SOTY Applications</div>
+            <a href="{{ route('admin.soty.index') }}" class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-3 hover:shadow-md transition-all active:scale-95">
+                <div class="w-12 h-12 bg-yellow-50 text-yellow-600 rounded-full flex items-center justify-center text-2xl">🏆</div>
+                <span class="text-xs font-semibold text-text-dark text-center">SOTY Apps</span>
+            </a>
+            <a href="{{ route('admin.users.index') }}" class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-3 hover:shadow-md transition-all active:scale-95">
+                <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-2xl">👥</div>
+                <span class="text-xs font-semibold text-text-dark text-center">Users</span>
             </a>
         </div>
     </div>
+
+    {{-- Recent Activity --}}
+    <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-heading font-bold text-text-dark">Recent Activity</h3>
+            <a href="{{ route('admin.registrations.index') }}" class="text-sm text-primary font-medium hover:underline">View All</a>
+        </div>
+        
+        <div class="flex flex-col gap-3">
+            @forelse($recentRegistrations->take(4) as $reg)
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center text-xl shrink-0">
+                    👤
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-semibold text-text-dark truncate">{{ $reg->participant->full_name ?? 'Unknown Student' }}</h4>
+                    <p class="text-xs text-text-light truncate">Registered for {{ $reg->event->event_name ?? 'an event' }}</p>
+                </div>
+                <div class="text-right shrink-0">
+                    <span class="text-[10px] text-text-light block">{{ $reg->created_at->diffForHumans() }}</span>
+                </div>
+            </div>
+            @empty
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center">
+                <p class="text-sm text-text-light">No recent activity.</p>
+            </div>
+            @endforelse
+
+            @foreach($recentSoty->take(2) as $soty)
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 bg-yellow-50 rounded-full flex items-center justify-center text-xl shrink-0">
+                    🏆
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-semibold text-text-dark truncate">{{ $soty->student->full_name ?? 'Unknown Student' }}</h4>
+                    <p class="text-xs text-text-light truncate">Submitted SOTY Application</p>
+                </div>
+                <div class="text-right shrink-0">
+                    <span class="text-[10px] text-text-light block">{{ $soty->created_at->diffForHumans() }}</span>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+
 </div>
+
+<style>
+/* Hide scrollbar for horizontal scroll areas */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+</style>
 @endsection

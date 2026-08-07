@@ -396,17 +396,17 @@
                                         </h4>
 
 
-                                        <!-- @if($event->venue)
-                                    <p class="text-xs text-text-light">📍 {{ $event->venue }}</p>
-                                    @endif
-                                    @if($event->event_date)
-                                    <p class="text-xs text-text-light">📅 {{ \Carbon\Carbon::parse($event->event_date)->format('M j, Y') }}</p>
-                                    @endif -->
+                                        @if($event->venue)
+                                        <p class="text-xs text-text-light mt-1">📍 {{ $event->venue }}</p>
+                                        @endif
+                                        @if($event->event_date)
+                                        <p class="text-xs text-text-light mt-0.5">📅 {{ \Carbon\Carbon::parse($event->event_date)->format('M j, Y') }}</p>
+                                        @endif
                                     </div>
                                 </div>
                             </a>
 
-                        <!-- Registration Status
+                        <!-- Registration Status -->
                                         <div class="flex flex-col items-end ml-2">
                                             @if($isFull)
                                                 <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full font-semibold">Full</span>

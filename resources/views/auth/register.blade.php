@@ -193,7 +193,6 @@
 
         <!-- Header Section -->
         <div class="register-header  px-8 py-8 text-center border-b border-gray-100">
-            <div class="brand-icon text-5xl mb-4">🎉</div>
             <h1 class="brand-title text-2xl font-heading font-bold text-text-dark mb-2">
                 Join <span class="text-primary">CampusConnect</span>
             </h1>
@@ -368,7 +367,6 @@
     <div id="successModal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
         <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4 text-center transform scale-95">
             <div class="modal-header mb-6">
-                <div class="success-icon text-6xl mb-4">🎉</div>
                 <h2 class="modal-title text-2xl font-heading font-bold text-primary mb-2">
                     Account Created Successfully!
                 </h2>

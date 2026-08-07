@@ -10,7 +10,6 @@
                 <div class="footer-section lg:col-span-2">
                     <div class="mb-6">
                         <h2 class="text-2xl lg:text-3xl font-heading font-bold text-white mb-4">
-                            <span class="text-2xl mr-2">🎉</span>
                             <span class="text-primary">CampusConnect</span>
                         </h2>
                         <p class="text-text-light font-body leading-relaxed max-w-md">

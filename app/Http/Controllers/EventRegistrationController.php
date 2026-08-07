@@ -11,11 +11,18 @@ class EventRegistrationController extends Controller
 {
     public function show(Event $event)
     {
+        if (auth()->user()->user_type !== 'student' || !auth()->user()->enrolment_no) {
+            return redirect()->route('events.index')->with('error', 'Only students can register for events.');
+        }
         return view('event-register', compact('event'));
     }
 
     public function register(Request $request, $eventId)
     {
+        if (auth()->user()->user_type !== 'student' || !auth()->user()->enrolment_no) {
+            return redirect()->back()->with('error', 'Only students with a valid enrolment number can register for events.');
+        }
+
         $event = Event::findOrFail($eventId);
 
         // ✅ Fetch settings

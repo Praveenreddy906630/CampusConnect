@@ -164,66 +164,109 @@
                 </div>
             </div>
             @endforeach
-        </div> -->
-
-        <!-- Events Grid -->
         <div class="events-grid grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
 
             @foreach($filteredEvents as $event)
             <div class="event-card bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-2 group">
 
                 <!-- Event Image -->
-                <div class="event-image-container relative overflow-hidden h-48">
+                <div class="event-image-container relative overflow-hidden h-48 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center shrink-0">
                     @if($event->thumbnail_image)
                     <img src="{{ asset('storage/' . $event->thumbnail_image) }}"
                         alt="{{ $event->event_name }}"
-                        class="event-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                        class="event-image absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 z-10">
+                    <!-- Fallback Content (Hidden initially if image exists) -->
+                    <div class="fallback-content hidden absolute inset-0 flex-col items-center justify-center text-white/50 z-0">
+                        <span class="text-4xl mb-2">📸</span>
+                        <span class="text-sm font-semibold px-4 text-center">{{ Str::limit($event->event_name, 30) }}</span>
+                    </div>
                     @else
-                    <img src="https://source.unsplash.com/600x400/?{{ $event->type }},sports"
-                        alt="{{ $event->event_name }}"
-                        class="event-image w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <!-- Fallback Content (Always visible) -->
+                    <div class="fallback-content absolute inset-0 flex flex-col items-center justify-center text-white/50 z-0">
+                        <span class="text-4xl mb-2">📸</span>
+                        <span class="text-sm font-semibold px-4 text-center">{{ Str::limit($event->event_name, 30) }}</span>
+                    </div>
                     @endif
 
                     <!-- Image Overlay -->
-                    <div class="image-overlay absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="image-overlay absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"></div>
 
                     <!-- Category Badge -->
-                    <div class="category-badge absolute top-3 left-3 bg-primary text-white px-3 py-1 rounded-full text-xs md:text-sm font-semibold shadow">
+                    <div class="category-badge absolute top-3 left-3 bg-primary text-white px-3 py-1 rounded-full text-xs font-semibold shadow z-30">
                         {{ ucfirst($event->type) }}
                     </div>
                 </div>
 
                 <!-- Event Content -->
-                <div class="event-content p-6 flex flex-col justify-between h-64 md:h-72">
-
-                    <div>
-                        <h3 class="event-title text-lg md:text-xl font-heading font-bold text-text-dark mb-3 group-hover:text-primary transition-colors duration-300">
+                <div class="event-content p-5 flex flex-col flex-1 bg-white relative z-30">
+                    <div class="flex-1">
+                        <h3 class="event-title text-lg font-heading font-bold text-text-dark mb-3 group-hover:text-primary transition-colors duration-300 line-clamp-1" title="{{ $event->event_name }}">
                             {{ $event->event_name }}
                         </h3>
 
-                        <p class="event-description text-text-light font-body mb-4 leading-relaxed line-clamp-3 text-sm md:text-base">
+                        <!-- Key Metadata Grid -->
+                        <div class="event-details grid grid-cols-2 gap-y-2 gap-x-2 mb-3">
+                            <div class="detail-item flex items-center text-xs text-text-light">
+                                <span class="w-4 h-4 mr-1.5 flex-shrink-0 text-primary">📅</span>
+                                <span class="font-body line-clamp-1 text-gray-700 font-medium">{{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }}</span>
+                            </div>
+                            <div class="detail-item flex items-center text-xs text-text-light">
+                                <span class="w-4 h-4 mr-1.5 flex-shrink-0 text-primary">⏰</span>
+                                <span class="font-body line-clamp-1 text-gray-700 font-medium">{{ \Carbon\Carbon::parse($event->event_time)->format('h:i A') }}</span>
+                            </div>
+                            <div class="detail-item flex items-center text-xs text-text-light">
+                                <span class="w-4 h-4 mr-1.5 flex-shrink-0 text-primary">📍</span>
+                                <span class="font-body line-clamp-1 text-gray-700 font-medium" title="{{ $event->venue }}">{{ $event->venue ?? 'TBD' }}</span>
+                            </div>
+                            <div class="detail-item flex items-center text-xs text-text-light">
+                                <span class="w-4 h-4 mr-1.5 flex-shrink-0 text-primary">👥</span>
+                                <span class="font-body line-clamp-1 text-gray-700 font-medium">{{ $event->max_participants ?? 'Unlimited' }} Seats</span>
+                            </div>
+                        </div>
+
+                        <!-- Organizer -->
+                        <div class="organizer flex items-center text-xs text-text-light mb-3">
+                             <span class="w-4 h-4 mr-1.5 flex-shrink-0 text-primary">🏢</span>
+                             <span class="font-body line-clamp-1 font-semibold text-gray-800">
+                                @if(isset($event->coordinators) && $event->coordinators->count() > 0)
+                                    {{ $event->coordinators->first()->name }}
+                                @else
+                                    CampusConnect
+                                @endif
+                             </span>
+                        </div>
+
+                        <p class="event-description text-gray-500 font-body mb-4 leading-relaxed line-clamp-2 text-xs md:text-sm">
                             {{ $event->description }}
                         </p>
                     </div>
 
-                    <!-- Register Button & Optional Footer -->
-                    <div class="event-footer flex items-center justify-between mt-auto">
-                        {{-- <div class="registrations-count text-sm text-text-light">
-                <span class="mr-1">👤</span>
-                {{ $event->registrations->count() }} registered
-                    </div> --}}
+                    <!-- Register Button & Status Footer -->
+                    <div class="event-footer flex items-center justify-between mt-auto border-t border-gray-100 pt-4">
+                        <div class="registration-status">
+                            @if($event->registration_open)
+                            <span class="inline-flex items-center text-green-600 text-xs font-semibold">
+                                <span class="w-2 h-2 bg-green-500 rounded-full mr-1.5 shadow-sm shadow-green-200"></span>Open
+                            </span>
+                            @else
+                            <span class="inline-flex items-center text-red-600 text-xs font-semibold">
+                                <span class="w-2 h-2 bg-red-500 rounded-full mr-1.5 shadow-sm shadow-red-200"></span>Closed
+                            </span>
+                            @endif
+                        </div>
 
-                    @if($event->registration_open)
-                    <a href="{{ route('event.register', $event->event_id) }}"
-                        class="register-btn text-center bg-primary text-white py-2 px-4 rounded-full font-heading font-semibold text-sm md:text-base hover:bg-red-700 hover:shadow-lg hover:shadow-primary/30 transform hover:scale-105 transition-all duration-300">
-                        Register Now →
-                    </a>
-                    @endif
+                        @if($event->registration_open)
+                        <a href="{{ route('event.register', $event->event_id) }}"
+                            class="register-btn text-center bg-primary text-white py-2 px-5 rounded-full font-heading font-bold text-xs hover:bg-red-700 hover:shadow-lg hover:shadow-primary/30 transform hover:scale-105 transition-all duration-300">
+                            Register Now →
+                        </a>
+                        @endif
+                    </div>
                 </div>
 
             </div>
-        </div>
-        @endforeach
+            @endforeach
 
         </div>
 
