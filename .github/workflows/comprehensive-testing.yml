@@ -31,9 +31,20 @@ jobs:
           name: all-reports
           path: ./*.xlsx
           retention-days: 1
+      - name: Create GitHub Pages placeholder
+        run: |
+          mkdir -p public
+          echo "<html><body><h1>Test Reports Deployed</h1></body></html>" > public/index.html
+          tar -cvf github-pages.tar public/
+      - name: Upload GitHub Pages Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: github-pages
+          path: github-pages.tar
+          retention-days: 1
 
   selenium_tests:
-    name: Selenium - Website Tests (300)
+    name: 🌐 Selenium — Website Tests (300)
     needs: test_setup
     runs-on: ubuntu-latest
     steps:
@@ -47,7 +58,7 @@ jobs:
           path: selenium-web-report.xlsx
 
   appium_tests:
-    name: Appium - Android Tests (300)
+    name: 📱 Appium — Android Tests (300)
     needs: test_setup
     runs-on: ubuntu-latest
     steps:
@@ -61,7 +72,7 @@ jobs:
           path: appium-android-report.xlsx
 
   unit_tests:
-    name: Unit Tests - API (300)
+    name: 🔬 Unit Tests — API (300)
     needs: test_setup
     runs-on: ubuntu-latest
     steps:
@@ -75,7 +86,7 @@ jobs:
           path: unit-test-report.xlsx
 
   validation_tests:
-    name: Validation Tests (300)
+    name: ✅ Validation Tests (300)
     needs: test_setup
     runs-on: ubuntu-latest
     steps:
@@ -89,7 +100,7 @@ jobs:
           path: validation-test-report.xlsx
 
   load_testing:
-    name: Load Testing - Performance (300)
+    name: 📊 Load Testing — Performance (300)
     needs: test_setup
     runs-on: ubuntu-latest
     steps:
@@ -103,7 +114,7 @@ jobs:
           path: load-test-report.xlsx
 
   deployment_status:
-    name: Deployment Status (300)
+    name: 🚀 Deployment Status (300)
     needs: test_setup
     runs-on: ubuntu-latest
     steps:
@@ -117,7 +128,7 @@ jobs:
           path: deployment-test-report.xlsx
 
   compile_master:
-    name: Compile Master Report & Deploy
+    name: 🗂️ Compile Master Report & Deploy
     needs: [selenium_tests, appium_tests, unit_tests, validation_tests, load_testing, deployment_status]
     runs-on: ubuntu-latest
     steps:
